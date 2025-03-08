@@ -9,7 +9,7 @@
 
 ## Requirements and Challenges
 
-* **Multiple File Tail**** – Monitor many log files in parallel (tens of files, each with potentially hundreds of thousands of lines) and continuously stream new lines as they are appended. The tool should handle new data in near real-time without missing lines.
+* **Multiple File Tail** – Monitor many log files in parallel (tens of files, each with potentially hundreds of thousands of lines) and continuously stream new lines as they are appended. The tool should handle new data in near real-time without missing lines.
 * **High-Frequency Updates** – Efficiently handle rapid append rates (hundreds of writes per second per file). The solution must avoid CPU-intensive polling loops and minimize I/O overhead so it can keep up with thousands of log lines per second in total.
 * **Log Rotation** – Gracefully handle log file rotations. If a log file is renamed or truncated as part of rotation (e.g. via logrotate), the tool should seamlessly continue following the new file or reset to the beginning of the truncated file, without losing data or hanging on an old file.
 * **Interleaved Output** – Combine entries from multiple files into a single unified output stream. Lines from different files should be interleaved in a logical order (e.g. chronological by timestamp or arrival time) rather than printed in separate blocks. This helps correlate events across systems.
