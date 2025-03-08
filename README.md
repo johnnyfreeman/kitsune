@@ -31,14 +31,17 @@ To meet these requirements, the tool uses an event-driven, producer/consumer arc
 
 Below is a high-level diagram of the data flow:
 
-            +---------------------------+       +-------------------+
-File A ---> |                           |       |                   | --- Colored ---> Terminal
-File B ---> |  File Watcher Goroutines  |  -->  |   Aggregator /    | --- Merged   --> Output
-File C ---> |   (fsnotify + reader)     |       |   Interleaver     | --- Lines    --> (STDOUT)
- ...        |                           |       |                   |
-File N ---> |   [reads new lines and    |       |   [merges lines   |
-            |    sends via channel]     |       |    by timestamp]  |
-            +---------------------------+       +-------------------+
+```mermaid
+graph TD;
+    A[File A] -->|New log lines| B[File Watcher Goroutines]
+    C[File B] -->|New log lines| B
+    D[File C] -->|New log lines| B
+    E[File N] -->|New log lines| B
+    
+    B -->|Sends lines via channel| F[Aggregator / Interleaver]
+    F -->|Merges lines by timestamp| G[Formatted Output]
+    G -->|Colored Logs| H((Terminal / STDOUT))
+```
 
 Each file has an independent watcher/reader, ensuring I/O waits or delays on one file do not block others. The aggregator merges and orders lines, then outputs them with appropriate color labeling.
 
